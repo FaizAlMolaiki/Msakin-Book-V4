@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # خدمة تطبيق جانجو
+  web:
+    build: .
+    container_name: django_app_web
+    # المجلد الحالي (المشروع) مرتبط بـ /app داخل الحاوية (للتطوير)
+    # هذا يعني أن التغييرات في الكود المحلي تنعكس داخل الحاوية بدون إعادة بناء
+    # لا تستخدم هذا في الإنتاج للأمان والأداء
+    volumes:
+      - .:/app
+    # ربط المنفذ 8000 على جهازك بالمنفذ 8000 داخل الحاوية
+    ports:
+      - "8000:8000"
+    # متغيرات البيئة التي سيقرأها ملف settings.py
+    environment:
+      # !!! هام: غيّر هذا المفتاح السري واستخدم طريقة آمنة في الإنتاج !!!
+      - SECRET_KEY=!!!change_me_to_a_strong_random_secret_key!!!
+      # 1 للتطوير (True), 0 للإنتاج (False)
+      - DEBUG=1
+      # اسم خدمة قاعدة البيانات (db) أدناه هو المضيف
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_NAME=your_db_name # !!! استبدل باسم قاعدة البيانات !!!
+      - DB_USER=your_db_user # !!! استبدل باسم المستخدم !!!
+      - DB_PASSWORD=your_db_password # !!! استبدل بكلمة المرور !!!
+      - DB_HOST=db
+      - DB_PORT=5432
+      # يمكن إضافة متغيرات بيئة أخرى هنا (مثل مفاتيح API)
+      # - EMAIL_HOST_USER=...
+      # - EMAIL_HOST_PASSWORD=...
+    # تأكد من أن خدمة قاعدة البيانات (db) تعمل قبل بدء خدمة الويب
+    depends_on:
+      - db
+
+  # خدمة قاعدة البيانات (PostgreSQL)
+  db:
+    image: postgres:13-alpine # استخدام نسخة أخف (alpine)
+    container_name: postgres_db_container
+    # استخدام وحدة تخزين للحفاظ على بيانات قاعدة البيانات بشكل دائم
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    # متغيرات البيئة لإنشاء قاعدة البيانات والمستخدم عند أول تشغيل
+    # !!! يجب أن تطابق هذه القيم ما تم وضعه في بيئة خدمة web أعلاه !!!
+    environment:
+      - POSTGRES_DB=msakindb # !!! استبدل بنفس اسم قاعدة البيانات أعلاه !!!
+      - POSTGRES_USER=msakindb # !!! استبدل بنفس اسم المستخدم أعلاه !!!
+      - POSTGRES_PASSWORD=msakindb@ms # !!! استبدل بنفس كلمة المرور أعلاه !!!
+    # لا حاجة لتعريض المنفذ للخارج إلا إذا كنت بحاجة للاتصال مباشرة من جهازك المضيف
+
+# تعريف وحدات التخزين المسماة
+volumes:
+  postgres_data: # سيقوم Docker بإدارة هذا المجلد لتخزين بيانات PostgreSQL

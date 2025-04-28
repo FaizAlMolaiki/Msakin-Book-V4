@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# Python cache and virtual environment
+__pycache__/
+*.pyc
+*.pyo
+venv/
+env/
+.env
+
+# Docker files (لا داعي لنسخها داخل الصورة)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Database files (لا نستخدم SQLite داخل الحاوية بهذا الإعداد)
+*.sqlite3
+db.sqlite3*
+
+# IDE folders
+.idea/
+.vscode/
+
+# Static & Media files (إذا كنت ستديرها بشكل منفصل أو عبر وحدات تخزين)
+# staticfiles/
+# mediafiles/
+# يمكنك إلغاء التعليق أعلاه إذا كنت لا تريد نسخ هذه المجلدات أثناء البناء
+
+# ملفات محلية أخرى أو سجلات
+logs/
+*.log
+local_settings.py
