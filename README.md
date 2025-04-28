@@ -48,26 +48,65 @@ flowchart TD
 
 ---
 
+## Project Analysis
+Msakin consists of several Django apps:
+- **accounts:** User management and profiles
+- **properties:** Real estate listings, images, comments, likes, and requests
+- **chat:** Real-time messaging between users (WebSocket)
+- **notifications:** Real-time notifications for user activities
+- **home:** Main website and landing pages
+- **media/static/templates:** File storage, static assets, and HTML templates
+- **Django Admin:** Admin dashboard for all data management
+
+All apps interact through the Django backend, with users accessing the system via browser (HTTP/REST and WebSocket). Data and files are stored in the database and file storage, and the admin panel provides full management capabilities.
+
+---
+
+## Project Overview Diagram
+Below is a high-level diagram showing how all core components interact:
+
+```mermaid
+flowchart TD
+    User --> Browser
+    Browser -->|HTTP/REST| API
+    Browser -->|WebSocket| WS
+    API --> accounts
+    API --> properties
+    API --> chat
+    API --> notifications
+    API --> home
+    API --> Admin
+    accounts --> DB
+    properties --> DB
+    properties --> Media
+    properties --> Images
+    chat --> DB
+    notifications --> DB
+    home --> Templates
+    API --> Static
+    API --> Templates
+    API --> DB
+    API --> Media
+    WS --> chat
+    WS --> notifications
+    Admin --> DB
+    Admin --> Media
+    Images --> Media
+    Static --> static_dir
+    Templates --> templates_dir
+```
+
+---
+
 ## System Architecture Diagram
 This diagram shows the high-level architecture and how the main components interact:
 
 ```mermaid
 flowchart LR
-    subgraph Client
-        U1[User Browser]
-    end
-    subgraph Backend
-        DJ[Django Server]
-        CH[Django Channels (WebSocket)]
-        DB[(Database)]
-        FS[(File Storage)]
-    end
-    U1 -- HTTP/REST --> DJ
-    U1 -- WebSocket --> CH
-    DJ -- ORM --> DB
-    DJ -- File Upload/Download --> FS
-    CH -- Real-time Events --> DJ
-    DJ -- Notify --> CH
+    U1[User Browser] -- HTTP/REST --> ASGI[ASGI Server (Django + Channels)]
+    U1 -- WebSocket --> ASGI
+    ASGI -- ORM --> DB[(Database)]
+    ASGI -- File Upload/Download --> FS[(File Storage)]
 ```
 
 ## Requirements
