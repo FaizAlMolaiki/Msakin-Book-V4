@@ -103,11 +103,19 @@ This diagram shows the high-level architecture and how the main components inter
 
 ```mermaid
 flowchart LR
-    U1[User Browser] -- HTTP/REST --> ASGI[ASGI Server (Django + Channels)]
+    U1 -- HTTP/REST --> ASGI
     U1 -- WebSocket --> ASGI
-    ASGI -- ORM --> DB[(Database)]
-    ASGI -- File Upload/Download --> FS[(File Storage)]
+    ASGI -- ORM --> DB
+    ASGI -- File --> FS
 ```
+
+| الرمز | المعنى                       |
+|-------|------------------------------|
+| U1    | User Browser                 |
+| ASGI  | ASGI Server (Django+Channels)|
+| DB    | Database                     |
+| FS    | File Storage                 |
+
 
 ## Requirements
 - Python 3.10+
